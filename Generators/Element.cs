@@ -252,7 +252,7 @@ namespace Bolder_Blacksmith.Generators
 
         (string,int) generateGeometricStructure()
         {
-            // dependent on catenation and density
+            // dependent on catenation and density -- cannot exceed 12
 
             int baseGeometry;
 

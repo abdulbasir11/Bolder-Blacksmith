@@ -94,7 +94,7 @@ namespace Bolder_Blacksmith.Generators
         //dependent properties
         public (int original, double normalized) density;
         public (string asString, int asInt) geometricStructure; //cubic: 1-3; crystalline, 3-12. --not normalized
-        public double hardness; // 3-9 for cubic, <=10 for crystalline, tending towards <=5
+        public (int original, double normalized) hardness; // 3-9 for cubic, <=10 for crystalline, tending towards <=5
         public double pliance;
         public double gravity;
         public double stdPhase; //0-0.2: gas, 0.2-0.4: liquid, >0.4, solid, >0.8, supersolid
@@ -111,6 +111,9 @@ namespace Bolder_Blacksmith.Generators
             deformation = generateDeformation();
             density = generateDensity();
             geometricStructure = generateGeometricStructure();
+            hardness = generateHardness();
+            pliance = generatePliance();
+            gravity = generateGravity();
         }
 
         public void initializeTestCase(int num)
@@ -121,6 +124,9 @@ namespace Bolder_Blacksmith.Generators
             deformation = generateDeformation();
             density = generateDensity();
             geometricStructure = generateGeometricStructure();
+            hardness = generateHardness();
+            pliance = generatePliance();
+            gravity = generateGravity();
         }
 
         (int,double) generateCovalentBonds()
@@ -271,6 +277,66 @@ namespace Bolder_Blacksmith.Generators
                     (int) Math.Round((covalence.original * (1.6 - utils.getRandomDouble(0.0, .25))));
                 return (Dictionaries.polygons[dampGeometry], dampGeometry);
             }
+        }
+
+        (int, double) generateHardness()
+        {
+            //basis for calculating edge.
+            //harder elements have more tensile and compressive strength, but less shear strength.
+            //softer elements, in turn, have less tensile and compressive strength, but more shear strength
+            //harder elements must be shorter in length (when made into ingot) because they tend to snap instead of bend
+            int baseHardness = (int) Math.Ceiling(density.normalized * 10);
+            int dampener;
+            if (baseStructure.asInt == 0)
+            {
+                dampener = utils.getRandomInt(0, 10);
+                if (dampener < 2) { baseHardness -= dampener; }
+                return (baseHardness, utils.normalize(baseHardness, 1, 10));
+            } else
+            {
+                dampener = utils.getRandomInt(0, 10);
+                if (dampener < 3) { baseHardness = (int)Math.Ceiling(catenationRate * 10); }
+                return (baseHardness, utils.normalize(baseHardness, 1, 10));
+            }
+
+        }
+
+        double generatePliance()
+        {
+            //workability. How "workable" is the element? pliability is essentially an elements
+            //ability to retain base properties when modified. Less pliant elements are easier
+            //destroyed when undergoing certain processes and more likely to fail when alloyed
+            double basePliance;
+
+            if (baseStructure.asInt == 0)
+            {
+                if (geometricStructure.asInt == 1 || geometricStructure.asInt == 3)
+                    basePliance = (1 - utils.getRandomDouble(0.2, 0.45));
+                else
+                {
+                    basePliance = 1 - utils.getRandomDouble(0.1, 0.25);
+                }
+            }
+            else
+            {
+                basePliance = ((catenationRate+deformation.original)/2.0) - utils.getRandomDouble(0.0, 0.2);
+            }
+            return basePliance;
+        }
+
+        double generateGravity()
+        {
+            //how heavy? In otherwords, what percentage of weight of a mineral will this element take up when bonded?
+            double baseGravity = (baseStructure.asInt == 0) ? 0.05 : 0.0;
+            double upperBound = (baseStructure.asInt == 0) ? 0.0175 : 0.02;
+            for (int i=0; i<density.original; i++)
+            {
+                baseGravity += utils.getRandomDouble(0.01,upperBound);
+            }
+
+            return baseGravity;
+
+
         }
     }
 }

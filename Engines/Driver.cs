@@ -18,7 +18,7 @@ namespace Bolder_Blacksmith
 
             while (true)
             {
-                Element[] elems = elemGen.getTestCase(5);
+                Element[] elems = elemGen.getTestCase(3);
 
                 for (int i = 0; i < elems.Length; i++)
                 {
@@ -38,6 +38,13 @@ namespace Bolder_Blacksmith
                         Console.WriteLine("...");
                         Console.WriteLine("Geometric Structure: " + elems[i].geometricStructure.asString);
                         Console.WriteLine("Geometric Structure -gons: " + elems[i].geometricStructure.asInt);
+                        Console.WriteLine("...");
+                        Console.WriteLine("Hardness Original: " + elems[i].hardness.original);
+                        Console.WriteLine("Hardness Normalized: " + elems[i].hardness.normalized);
+                        Console.WriteLine("...");
+                        Console.WriteLine("Pliance: " + elems[i].pliance);
+                        Console.WriteLine("...");
+                        Console.WriteLine("Gravity: " + elems[i].gravity);
                         Console.WriteLine("---------------------------------------");
                 }
 

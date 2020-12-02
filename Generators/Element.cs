@@ -100,11 +100,10 @@ namespace Bolder_Blacksmith.Generators
         public (int original, double normalized) hardness; // 3-9 for cubic, <=10 for crystalline, tending towards <=5
         public double pliance;
         public double gravity;
-        public double stdPhase; //0-0.2: gas, 0.2-0.4: liquid, >0.4, solid, >0.8, supersolid
-        public int phase; //int representaion of phase; see above
-        public double heatRes;
-        public double heatHardness;
         public double cleaveTendency;
+        public (double meltingPoint, double boilingPoint) transitionalPoints; //temperatures when an element transitions phases
+        public double heatRes; //modifies how slowly or quickly an element absorbs heat. Functions as a multiplier to transitionalPoints. e.g. (melting point)*1.05
+        public double pressureRes; //linearly reduces or increases the melting and boiling point. measured as "degrees per atmosphere". e.g. .016 degree/atmosphere.
 
         public void initialize()
         {
@@ -394,6 +393,26 @@ namespace Bolder_Blacksmith.Generators
             return baseGravity;
 
 
+        }
+
+        double generateCleaveTendency()
+        {
+            throw new Exception("implement");
+        }
+
+       (double, double) generateTransitionalPoints()
+        {
+            throw new Exception("implement");
+        }
+
+        double generateHeatRes()
+        {
+            throw new Exception("implement");
+        }
+
+        double generatePressureRes()
+        {
+            throw new Exception("implement");
         }
     }
 }

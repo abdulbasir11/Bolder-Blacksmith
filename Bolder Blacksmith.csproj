@@ -42,6 +42,7 @@
     <Compile Include="Actors\Player.cs" />
     <Compile Include="Generators\Element.cs" />
     <Compile Include="Generators\ElementGenerator.cs" />
+    <Compile Include="Generators\Isotope.cs" />
     <Compile Include="Generators\Mineral.cs" />
     <Compile Include="Generators\MineralGenerator.cs" />
     <Compile Include="Generators\Rock.cs" />

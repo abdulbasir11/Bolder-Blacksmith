@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace Bolder_Blacksmith.Generators
 {
     /*Element properties include:
+     *       NOTE: some of these property descriptions are inaccurate
+     *       They were written before implementation!
+     *       
      *      -Number of covalent bonds. Ranges from
      *      1 to 8.
      *      
@@ -129,6 +132,8 @@ namespace Bolder_Blacksmith.Generators
             gravity = generateGravity();
         }
 
+        //selects an integer based on a probability of its occurrence.
+        //See Dictionaries.weights
         (int,double) generateCovalentBonds()
         {
             double[] covalenceWeights = Dictionaries.weights["covalence"];
@@ -136,11 +141,21 @@ namespace Bolder_Blacksmith.Generators
             return (prob, utils.normalize(prob, 1, 8));
         }
 
+        //feeds an integer instead of selecting based on weights.
+        //for testing purposes
         (int, double) generateCovalentBondsTest(int num)
         {
             return (num, utils.normalize(num, 1, 8));
         }
 
+        //generates a value from 0-1, increasing based on how close an
+        //element's number of covalent bonds is from 4.
+        //Additionally, a random double is selected from
+        //a uniform distribution and added or subtracted.
+        //As the normalized distance would tend towards zero
+        //the closer to 4, the final rate is 1 - the normalized distance
+        //with the random uniform value applied.
+        //e.g., if covalence.original = 4, dist = 0, therefore 1-dist = 1.
         double generateCatenationRate()
         {
             double catenation = 0;
@@ -178,6 +193,11 @@ namespace Bolder_Blacksmith.Generators
                 return 1 - catenation;
         }
 
+        //generates a base structure, either cubic or crystalline.
+        //Almost completely dependent on the number of covalent bonds.
+        //As crystalline elements are more likely, there is a small
+        //chance that a crystalline element will "flip". However,
+        //if the catenation rate is too high, it cannot flip.
         (string,int) generateBaseStructure()
         {
 
@@ -200,6 +220,11 @@ namespace Bolder_Blacksmith.Generators
 
         }
 
+        //how likely the element is to deform when stressed.
+        //The basis for this calculation is the normalized covalence/2.
+        //Meaning, more covalent elements are more likely to deform.
+        //Additionally, evenly covalent elements are more likely to deform than oddly covalent elements.
+        //Lastly, a random uniform double is applied.
         (double, double) generateDeformation()
         {
             double baseDeformation = covalence.normalized / 2;
@@ -218,17 +243,13 @@ namespace Bolder_Blacksmith.Generators
             return (dampenedDeformation,refinedDeformation);
         }
 
-
+        //How dense the element is. Cubic elements tend to be the most dense,
+        //metalloids are moderately dense, and everything else is not very dense.
+        //Evenly covalent elements are denser than odd.
+        //highly covalent elements with low deformative tendencies tend to be denser than otherwise.
+        //lowly covalent elements with low deformative tendencies do not typically increase beyond +1 as per the dampener.
         (int, double) generateDensity()
         {
-            //dense if:
-            /*
-             * cubic
-             * odd symmetry
-             * lower deformation
-             * lower covalence?
-             */
-
             int baseDensity = 0; ;
 
             if (covalence.original <= 3)
@@ -256,6 +277,14 @@ namespace Bolder_Blacksmith.Generators
             return (dampDensityInt, utils.normalize(dampDensityInt,1,25));
         }
 
+        //Geometry is entirely dependent on density for cubic elements.
+        //For crystalline elements, it is dependent on covalence and catenation.
+        //If it is lowly catenating (below .5), density has a max value of 8*1.5, or 12.
+        //If it is highly catenating (above .5), density has a max value of 5*1.85, or 9.25.
+        //FAQ: WHY NOT JUST COVALENCE?! ISN'T CATENATION BASED ON COVALENCE?!
+        //Answer: Recall- catenation can increase by a max of .15 and decrease by a max of .075.
+        //        Though a small margin, this can flip the operation for values immediately
+        //        next to 4.
         (string,int) generateGeometricStructure()
         {
             // dependent on catenation and density -- cannot exceed 12
@@ -279,6 +308,12 @@ namespace Bolder_Blacksmith.Generators
             }
         }
 
+        //For cubic elements, hardness is entirely based on density,
+        //though it has a 20% chance of being slighly reduced.
+        //For crystalline elements, it is also based on density,
+        //but has a 30% chance of being based on catenation instead.
+        //This allows highly catenating elements to reach high densities
+        //naturally (e.g. hyper-dense metalloids, like diamond).
         (int, double) generateHardness()
         {
             //basis for calculating edge.
@@ -294,6 +329,7 @@ namespace Bolder_Blacksmith.Generators
                 return (baseHardness, utils.normalize(baseHardness, 1, 10));
             } else
             {
+                //diamonds! 30% chance to be highly catenating
                 dampener = utils.getRandomInt(0, 10);
                 if (dampener < 3) { baseHardness = (int)Math.Ceiling(catenationRate * 10); }
                 return (baseHardness, utils.normalize(baseHardness, 1, 10));
@@ -301,6 +337,17 @@ namespace Bolder_Blacksmith.Generators
 
         }
 
+        //For body centered and hexagonal cuboid elements, pliance is between .55 and .8.
+        //For face-centered elements, it is between .75 and .9.
+        //For crystalline elements, it is based on catenation and deformation.
+        //
+        //Recall that catenation increases the closer an element is to 4 covalent bonds.
+        //Also recal that deformation increases for highly covalent and even elements.
+        // There for, covalence+deformation/2 balances lowly covalent, moderately deforming
+        // elements with highly covalent, highly deforming elements, and applies a random
+        // uniform value between 0 and .2. NOTE that non normalized deformation cannot exceed .5.
+        // So, the maximum theoretical value is .75 for crystalline elements, decreasing based
+        // on the abovementioned factors.
         double generatePliance()
         {
             //workability. How "workable" is the element? pliability is essentially an elements
@@ -324,6 +371,16 @@ namespace Bolder_Blacksmith.Generators
             return basePliance;
         }
 
+        //More accurately, relative mass. Dependent on density and base structure.
+        //For cubic elements, the base gravity is 0.05; 0 for crystalline.
+        //For cubic elements, the upper bound for random generation is .0175 (smaller) compared to 0.02
+        //This is because cubic elements are typically denser, so they will iterate more.
+        //NOTE: though this could be written as density*the random uniform value,
+        //      I chose to just leave the for loop to better illustrate the thought process behind it.
+        //ALSO NOTE: This value is not normalized. Though, the theoretical maximum is 0.4875 for cubic elements
+        //           and .28 for crystalline elements (PLEASE DO NOT ASK ME HOW I GOT THIS NUMBER. SEE DENSITY FUNCTION).
+        //           Using these max values, we would say that the element accounts for 48.75% of the weight when
+        //           when bonded at each point to other elements (and 28% for the crystalline max).
         double generateGravity()
         {
             //how heavy? In otherwords, what percentage of weight of a mineral will this element take up when bonded?

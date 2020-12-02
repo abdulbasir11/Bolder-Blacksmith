@@ -34,5 +34,14 @@ public static class Dictionaries
 
         };
 
+    public static readonly Dictionary<int, string> phases =
+    new Dictionary<int, string>
+        {
+            {1,"gas"},
+            {2, "liquid" },
+            {3, "solid" },
+            {4, "supersolid"}
+        };
+
 
 }

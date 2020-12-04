@@ -452,7 +452,7 @@ namespace Bolder_Blacksmith.Generators
         //Generates melting and boiling points for an element
         //based on density and hardness.
         //See utils for function specifics.
-        /
+        //
         //NOTE: I could go into great depth in what the function is intended to do,
         //      but to put it simply:
         //

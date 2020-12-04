@@ -162,14 +162,14 @@ namespace Bolder_Blacksmith.Generators
             double catenation = 0;
             double uniformValue;
             double int_covalence = covalence.original;
-            double dist = int_covalence - 4;
+            double dist = int_covalence - Constants.catenation_max;
 
             while (true)
             {
                 uniformValue = utils.getRandomDouble();
                 if (uniformValue <= 0.15)
                 {
-                    catenation = Math.Abs(utils.normalize(dist, 0, 4));
+                    catenation = Math.Abs(utils.normalize(dist, Constants.catenation_min, Constants.catenation_max));
 
                     if (catenation != 1)
                     {
@@ -202,7 +202,7 @@ namespace Bolder_Blacksmith.Generators
         (string,int) generateBaseStructure()
         {
 
-            int unbiasedBase = (covalence.original <= 3) ? 0 : 1;
+            int unbiasedBase = (covalence.original <= 3) ? Constants.is_cubic : Constants.is_crystal;
             string structureType = "cubic";
 
             double weight = utils.getRandomDouble();
@@ -233,12 +233,12 @@ namespace Bolder_Blacksmith.Generators
                                                                        : baseDeformation+Constants.deformation_odd_symmetry_multiplier;
             double dampener = utils.getRandomDouble(0.0,0.15);
 
-            if (dampenedDeformation > 0.5)
+            if (dampenedDeformation > Constants.deformation_max)
             {
-                dampenedDeformation = 0.5 - dampener;
-            } else if (dampenedDeformation < 0.0)
+                dampenedDeformation = Constants.deformation_max - dampener;
+            } else if (dampenedDeformation < Constants.deformation_min)
             {
-                dampenedDeformation = 0.0 + dampener;
+                dampenedDeformation = Constants.deformation_min + dampener;
             }
 
             double refinedDeformation = utils.normalize(dampenedDeformation,0.0,0.5);

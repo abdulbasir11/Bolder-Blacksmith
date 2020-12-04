@@ -20,6 +20,9 @@ namespace Bolder_Blacksmith.Generators
         public const int covalence_max = 8; //!!!
         public const int covalence_min = 1; //!!!
 
+        public const int catenation_min = 0; //!
+        public const int catenation_max = 4;
+
         public const int is_cubic = 0; //!
         public const int is_crystal = 1; //!
 
@@ -29,6 +32,8 @@ namespace Bolder_Blacksmith.Generators
 
         public const double structure_cubic_limit = 0.95;
 
+        public const double deformation_max = 0.5;
+        public const double deformation_min = 0.0;
         public const double deformation_even_symmetry_multiplier = 0.1;
         public const double deformation_odd_symmetry_multiplier = -0.075;
 

@@ -45,6 +45,12 @@ namespace Bolder_Blacksmith
                         Console.WriteLine("Pliance: " + elems[i].pliance);
                         Console.WriteLine("...");
                         Console.WriteLine("Gravity: " + elems[i].gravity);
+                        Console.WriteLine("...");
+                        Console.WriteLine("Melting Resistance: " + elems[i].heatRes.meltingRes);
+                        Console.WriteLine("Boiling Resistance: " + elems[i].heatRes.boilingRes);
+                        Console.WriteLine("...");
+                        Console.WriteLine("Melting Point: "+elems[i].transitionalPoints.meltingPoint);
+                        Console.WriteLine("Boiling Point: " + elems[i].transitionalPoints.boilingPoint);
                         Console.WriteLine("---------------------------------------");
                 }
 
@@ -60,6 +66,8 @@ namespace Bolder_Blacksmith
                 }
 
             }
+
         }
+
     }
 }

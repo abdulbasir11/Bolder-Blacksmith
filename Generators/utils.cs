@@ -77,5 +77,31 @@ namespace Bolder_Blacksmith.Generators
 
         }
 
+        public static double getTransitionalPointDampener(double d, int operation)
+        {
+            //0 - light scaling
+            if (operation == 0)
+            {
+                return (1 - ((1.0 / 6.0) * Math.Log10(4.0 * d))) + (1.0 / 10.0);
+            }
+            //1 - heavy scaling
+            else if (operation == 1)
+            {
+                return (0.8 - ((1.0 / 3.0) * Math.Log10(4.0 * d))) + (1.0 / 10.0);
+            }
+            else
+            {
+                throw new Exception("Unknown operation");
+            }
+        }
+
+        public static double getTransitionalPoint(double d, double c, double s, double damp)
+        {
+
+         return ((20 * Math.Pow(d, 2)) / Math.Sqrt(d)) +
+            ((c * d) / ((s + damp) / 2));
+
+        }
+
     }
 }

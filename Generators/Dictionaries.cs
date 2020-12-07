@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public static class Dictionaries
 {
+
     public static readonly Dictionary<string, double[]> weights =
         new Dictionary<string, double[]>
         {
             {"covalence", new [] { 1.0 / 8.0, 1.0 / 8.0, 2.0 / 8.0, 3.0 / 8.0, 2.0 / 8.0, 1.0 / 8.0, 1.0 / 8.0, 1.0 / 8.0 } },
-            {"covalence_test", new [] {0.9,0.0,0.0,0.0,0.0,0.0,0.0,0.0} }
         };
 
     public static readonly Dictionary<int, string> cubics =
@@ -33,15 +33,5 @@ public static class Dictionaries
             {12, "dodecagonal" }
 
         };
-
-    public static readonly Dictionary<int, string> phases =
-    new Dictionary<int, string>
-        {
-            {1,"gas"},
-            {2, "liquid" },
-            {3, "solid" },
-            {4, "supersolid"}
-        };
-
 
 }

@@ -24,6 +24,9 @@ namespace Bolder_Blacksmith.Generators
      *      
      *      -Luster. Based on net structure and complexity
      *      
+     *      -Instability. Residual weight. Calculated as
+     *      (netweight % 1)/2
+     *      
      *      -Net deformation.
      *      
      *      -Net density.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bolder_Blacksmith.Generators
+namespace Bolder_Blacksmith
 {
     public static class utils
     {
@@ -74,6 +74,44 @@ namespace Bolder_Blacksmith.Generators
 
             //error!
             return 0;
+
+        }
+
+        //C# doesn't have a built in clamp method lol
+        public static T Clamp<T>(T value, T min, T max)
+            where T : System.IComparable<T>
+                {
+                    T result = value;
+                    if (value.CompareTo(max) > 0)
+                        result = max;
+                    if (value.CompareTo(min) < 0)
+                        result = min;
+                    return result;
+                }
+
+        public static double getTransitionalPointDampener(double d, int operation)
+        {
+            //0 - light scaling
+            if (operation == 0)
+            {
+                return (1 - ((1.0 / 6.0) * Math.Log10(4.0 * d))) + (1.0 / 10.0);
+            }
+            //1 - heavy scaling
+            else if (operation == 1)
+            {
+                return (0.8 - ((1.0 / 3.0) * Math.Log10(4.0 * d))) + (1.0 / 10.0);
+            }
+            else
+            {
+                throw new Exception("Unknown operation");
+            }
+        }
+
+        public static double getTransitionalPoint(double d, double c, double s, double damp)
+        {
+
+         return ((20 * Math.Pow(d, 2)) / Math.Sqrt(d)) +
+            ((c * d) / ((s + damp) / 2));
 
         }
 

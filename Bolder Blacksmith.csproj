@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\EnemyAI.cs" />
+    <Compile Include="Engines\GameConstants.cs" />
     <Compile Include="Generators\Constants.cs" />
     <Compile Include="Engines\Driver.cs" />
     <Compile Include="Engines\GameInstance.cs" />
@@ -48,8 +49,11 @@
     <Compile Include="Generators\MineralGenerator.cs" />
     <Compile Include="Generators\Rock.cs" />
     <Compile Include="Generators\RockGenerator.cs" />
-    <Compile Include="Generators\utils.cs" />
+    <Compile Include="utils.cs" />
     <Compile Include="Generators\Dictionaries.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

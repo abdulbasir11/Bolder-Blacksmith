@@ -104,6 +104,26 @@ namespace Bolder_Blacksmith.Generators
         public (double meltingPoint, double boilingPoint) transitionalPoints; //temperatures when an element transitions phases
         public double heatRes; //modifies how slowly or quickly an element absorbs heat. Functions as a multiplier to transitionalPoints. e.g. (melting point)*1.05
         public double pressureRes; //linearly reduces or increases the melting and boiling point. measured as "degrees per atmosphere". e.g. .016 degree/atmosphere.
+        
+        public Element() { }
+
+        public Element (Element other)
+        {
+            elementName = other.elementName;
+            covalence = other.covalence;
+            catenationRate = other.catenationRate;
+            baseStructure = other.baseStructure;
+            deformation = other.deformation;
+            density = other.density;
+            geometricStructure = other.geometricStructure;
+            hardness = other.hardness;
+            pliance = other.pliance;
+            gravity = other.gravity;
+            cleaveTendency = other.cleaveTendency;
+            transitionalPoints = other.transitionalPoints;
+            heatRes = other.heatRes;
+            pressureRes = other.pressureRes;
+        }
 
         public void initialize()
         {

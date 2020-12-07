@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -74,7 +75,7 @@ namespace Bolder_Blacksmith.Generators
      *      tend to be much more temperature resistant. face-centered are typically
      *      not very heat resistant. Functions as a multiplier or divider. There are no
      *      explicit bounds, but unreasonable heat resistance would result in
-     *      an element that's phase does not change.
+     *      an element thats phase does not change.
      *      
      *      -Pressure resistance. Functions as a multiplier or divider, raising or lowering
      *      transitional points conditionally, based on atmospheric pressure. Represented
@@ -114,7 +115,9 @@ namespace Bolder_Blacksmith.Generators
             hardness = generateHardness();
             pliance = generatePliance();
             gravity = generateGravity();
+            cleaveTendency = generateCleaveTendency();
             heatRes = generateHeatRes();
+            pressureRes = generatePressureRes();
             transitionalPoints = generateTransitionalPoints();
         }
 
@@ -129,7 +132,9 @@ namespace Bolder_Blacksmith.Generators
             hardness = generateHardness();
             pliance = generatePliance();
             gravity = generateGravity();
+            cleaveTendency = generateCleaveTendency();
             heatRes = generateHeatRes();
+            pressureRes = generatePressureRes();
             transitionalPoints = generateTransitionalPoints();
         }
 
@@ -398,9 +403,19 @@ namespace Bolder_Blacksmith.Generators
 
         }
 
+        //based on base structure and hardness.
+        //This number is the likelihood that the
+        //element will cleave instead of bend.
         double generateCleaveTendency()
         {
-            throw new Exception("implement");
+            double structureMod = (baseStructure.asInt == Constants.is_cubic) 
+                ? utils.getRandomDouble(Constants.cleave_cubic_min, Constants.cleave_cubic_max) 
+                : utils.getRandomDouble(Constants.cleave_crystal_min + (covalence.normalized/Constants.cleave_crystal_damp), Constants.cleave_crystal_max);
+            double baseCleave = structureMod - (hardness.normalized / Constants.cleave_damp);
+
+            double dampCleave = utils.Clamp(baseCleave, Constants.cleave_min, Constants.cleave_max);
+
+            return dampCleave;
         }
 
         //Generates multipliers for transitional points
@@ -444,9 +459,21 @@ namespace Bolder_Blacksmith.Generators
             return (baseMeltingRes, baseBoilingRes);
         }
 
+        //atmosphere is normalized number from -5 to 5; see Engines.GameConstants
+        //At 0, the base melting/boiling point are used; see Engines.GameInstance
+        //Pressure resistance increases based on covalence
         double generatePressureRes()
         {
-            throw new Exception("implement");
+            double basePressureRes;
+            double dampPressureRes;
+
+            int sign = (covalence.original > 3) ? 1 : -1;
+            basePressureRes = ((covalence.normalized/2) * sign) + (utils.getRandomDouble(Constants.pressure_damp_min, Constants.pressure_damp_max) * (sign));
+
+            dampPressureRes = (sign == 1) ? 1.0 + basePressureRes : 1.0 / 1.0 + basePressureRes;
+
+            return dampPressureRes;
+                                
         }
 
         //Generates melting and boiling points for an element
@@ -462,7 +489,7 @@ namespace Bolder_Blacksmith.Generators
         //      with the hardness to generate a multiplier
         //      that prevents less dense elements from producing values
         //      that are too small and denser elements from producing
-        //      values that are too small.
+        //      values that are too large.
         //
         //      The actual function is just exponential
         //      function. The dampener multiplies the constant

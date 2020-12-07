@@ -82,7 +82,21 @@ namespace Bolder_Blacksmith.Generators
         public const double heat_res_non_zero_boiling_scaler = 2.0;
         public const double heat_res_zero_boiling_scaler = 1.25;
 
+        public const double pressure_damp_min = 0.0;
+        public const double pressure_damp_max = 0.15;
+
         public const double melting_point_density_scaler = 50.0;
         public const double boiling_point_density_scaler = 100.0;
+
+        public const double cleave_cubic_min = 0.0;
+        public const double cleave_cubic_max = 0.4;
+        public const double cleave_crystal_min = 0.3;
+        public const double cleave_crystal_max = 1.0;
+        public const double cleave_crystal_damp = 2.2;
+        public const double cleave_damp = 4.0;
+        public const double cleave_min = 0.0;
+        public const double cleave_max = 1.0;
+
+
     }
 }

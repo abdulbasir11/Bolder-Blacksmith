@@ -1,8 +1,12 @@
-﻿using Bolder_Blacksmith.Generators;
+﻿using Bolder_Blacksmith.Engines;
+using Bolder_Blacksmith.Generators;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,16 +50,33 @@ namespace Bolder_Blacksmith
                         Console.WriteLine("...");
                         Console.WriteLine("Gravity: " + elems[i].gravity);
                         Console.WriteLine("...");
+                        Console.WriteLine("Cleaving Tendency: " + elems[i].cleaveTendency);
+                        Console.WriteLine("...");
                         Console.WriteLine("Melting Resistance: " + elems[i].heatRes.meltingRes);
                         Console.WriteLine("Boiling Resistance: " + elems[i].heatRes.boilingRes);
                         Console.WriteLine("...");
                         Console.WriteLine("Melting Point: "+elems[i].transitionalPoints.meltingPoint);
                         Console.WriteLine("Boiling Point: " + elems[i].transitionalPoints.boilingPoint);
+                        Console.WriteLine("...");
+                        Console.WriteLine("Pressure Resistance: " + elems[i].pressureRes);
                         Console.WriteLine("---------------------------------------");
+                }
+
+                int randomElem = utils.getRandomInt(0, 23); //spit out a random element's breakdown
+                for (int i = GameConstants.MINIMUM_PRESSURE; i < GameConstants.MAXIMUM_PRESSURE + GameConstants.PRESSURE_DAMPENER; i++)
+                {
+
+                    Console.WriteLine("Normalized pressure change at " + i + ": " + GameInstance.getPressureCalc(i));
+
+                    (double,double) newPoints = GameInstance.getPressuredTransitionalPoints(elems[randomElem], GameInstance.getPressureCalc(i));
+
+                    Console.WriteLine("Element " + (randomElem + 1) + "s melting point at " + i + " change in atmospheres: (" + newPoints.Item1 + "," + newPoints.Item2 + ")");
+                    Console.WriteLine("...");
                 }
 
                 Console.WriteLine("Again?");
                 string again = Console.ReadLine();
+
                 if (again.Equals("y"))
                 {
                     continue;
@@ -64,6 +85,7 @@ namespace Bolder_Blacksmith
                 {
                     break;
                 }
+
 
             }
 

@@ -114,6 +114,5 @@ namespace Bolder_Blacksmith
             ((c * d) / ((s + damp) / 2));
 
         }
-
     }
 }

@@ -77,51 +77,65 @@ namespace Bolder_Blacksmith.Generators
         public bool glassBones;
         public static double glassBonesChance = 0.01;
         public static double glassBonesCleaveTendencyBonus = 0.5;
+
+        public static double radioactiveChance = 0.005;
+        public static double magneticChance = 0.3;
         public Isotope(Element baseElem) : base(baseElem)
         {
-            //add additional properties to base element and return isotope
-            floridian = Generators.utils.getRandomDouble() < floridianChance;
+            //Add additional properties to base element and return isotope
+            //TODO remove hardcoded 1.0s and replace with things from Constants, based on the element type
+            floridian = utils.getRandomDouble() < floridianChance;
             if (floridian)
             {
-                heatRes += (1.0 - heatRes) * floridianHeatResBonus;
+                heatRes.boilingRes += (1.0 - heatRes.boilingRes) * floridianHeatResBonus;
+                heatRes.meltingRes += (1.0 - heatRes.meltingRes) * floridianHeatResBonus;
             }
 
-            whiteKnuckled = Generators.utils.getRandomDouble() < whiteKnuckledChance;
+            whiteKnuckled = utils.getRandomDouble() < whiteKnuckledChance;
             if (whiteKnuckled)
             {
                 pressureRes += (1.0 - pressureRes) * whiteKnuckledPressureResBonus;
             }
 
-            gregarious = Generators.utils.getRandomDouble() < gregariousChance;
+            gregarious = utils.getRandomDouble() < gregariousChance;
             if (gregarious)
             {
                 catenationRate *= gregariousCatenationRateMult;
             }
 
-            antisocial = Generators.utils.getRandomDouble() < antisocialChance;
+            antisocial = utils.getRandomDouble() < antisocialChance;
             if (antisocial)
             {
                 covalence.original = (int)(covalence.original * antisocialCovalenceMult);
                 covalence.normalized = utils.normalize(covalence.original, 1, 8);
             }
 
-            paleoDiet = Generators.utils.getRandomDouble() < paleoDietChance;
+            paleoDiet = utils.getRandomDouble() < paleoDietChance;
             if (paleoDiet)
             {
                 gravity *= paleoDietGravityMult;
             }
 
-            softy = Generators.utils.getRandomDouble() < softyChance;
+            softy = utils.getRandomDouble() < softyChance;
             if (softy)
             {
                 pliance += (1.0 - pliance) * softyPlianceBonus;
             }
 
-
-            glassBones = Generators.utils.getRandomDouble() < glassBonesChance;
+            glassBones = utils.getRandomDouble() < glassBonesChance;
             if (glassBones)
             {
                 cleaveTendency += (1.0 - cleaveTendency) * glassBonesCleaveTendencyBonus;
+            }
+
+            if (utils.getRandomDouble() < radioactiveChance)
+            {
+                radioactivity = utils.getRandomDouble();
+            }
+
+            if (utils.getRandomDouble() < magneticChance)
+            {
+                magnetism = utils.getRandomDouble();
             }
         }
 

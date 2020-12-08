@@ -101,9 +101,11 @@ namespace Bolder_Blacksmith.Generators
         public double gravity;
         public double cleaveTendency;
         public (double meltingPoint, double boilingPoint) transitionalPoints; //temperatures when an element transitions phases
-        public double heatRes; //modifies how slowly or quickly an element absorbs heat. Functions as a multiplier to transitionalPoints. e.g. (melting point)*1.05
-        public double pressureRes; //linearly reduces or increases the melting and boiling point. measured as "degrees per atmosphere". e.g. .016 degree/atmosphere.
-        
+        public (double meltingRes, double boilingRes) heatRes; //e.g. (melting point)*1.05
+        public double pressureRes; //measured as "degrees per atmosphere". e.g. .016 degree/atmosphere.
+        public double radioactivity = 0.0; //0.0 to 1.0, very rare, causes problems
+        public double magnetism = 0.0; //0.0 to 1.0,  does something?
+
         public Element() { }
 
         public Element (Element other)
@@ -122,10 +124,50 @@ namespace Bolder_Blacksmith.Generators
             transitionalPoints = other.transitionalPoints;
             heatRes = other.heatRes;
             pressureRes = other.pressureRes;
+            radioactivity = other.radioactivity;
+            magnetism = other.magnetism;
         }
 
-        public (double meltingRes, double boilingRes) heatRes; //e.g. (melting point)*1.05
-        public double pressureRes; //measured as "degrees per atmosphere". e.g. .016 degree/atmosphere.
+        public void printInfo()
+        {
+            Console.WriteLine("Normal Covalence: " + covalence.normalized);
+            Console.WriteLine("Integer Covalence: " + covalence.original);
+            Console.WriteLine("...");
+            Console.WriteLine("Catenation Rate: " + catenationRate);
+            Console.WriteLine("...");
+            Console.WriteLine("Base Structure: " + baseStructure.asString);
+            Console.WriteLine("...");
+            Console.WriteLine("Original Deformation: " + deformation.original);
+            Console.WriteLine("Normal Deformation: " + deformation.normalized);
+            Console.WriteLine("...");
+            Console.WriteLine("Original Density: " + density.original);
+            Console.WriteLine("Normal Density: " + density.normalized);
+            Console.WriteLine("...");
+            Console.WriteLine("Geometric Structure: " + geometricStructure.asString);
+            Console.WriteLine("Geometric Structure -gons: " + geometricStructure.asInt);
+            Console.WriteLine("...");
+            Console.WriteLine("Hardness Original: " + hardness.original);
+            Console.WriteLine("Hardness Normalized: " + hardness.normalized);
+            Console.WriteLine("...");
+            Console.WriteLine("Pliance: " + pliance);
+            Console.WriteLine("...");
+            Console.WriteLine("Gravity: " + gravity);
+            Console.WriteLine("...");
+            Console.WriteLine("Cleaving Tendency: " + cleaveTendency);
+            Console.WriteLine("...");
+            Console.WriteLine("Melting Resistance: " + heatRes.meltingRes);
+            Console.WriteLine("Boiling Resistance: " + heatRes.boilingRes);
+            Console.WriteLine("...");
+            Console.WriteLine("Melting Point: " + transitionalPoints.meltingPoint);
+            Console.WriteLine("Boiling Point: " + transitionalPoints.boilingPoint);
+            Console.WriteLine("...");
+            Console.WriteLine("Pressure Resistance: " + pressureRes);
+            Console.WriteLine("...");
+            Console.WriteLine("Radioactivity: " + radioactivity);
+            Console.WriteLine("...");
+            Console.WriteLine("Magnetism: " + magnetism);
+            Console.WriteLine("---------------------------------------");
+        }
 
         public void initialize()
         {

@@ -26,40 +26,8 @@ namespace Bolder_Blacksmith
 
                 for (int i = 0; i < elems.Length; i++)
                 {
-                        Console.WriteLine("Element " + (i + 1));
-                        Console.WriteLine("Normal Covalence: " + elems[i].covalence.normalized);
-                        Console.WriteLine("Integer Covalence: " + elems[i].covalence.original);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Catenation Rate: " + elems[i].catenationRate);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Base Structure: " + elems[i].baseStructure.asString);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Original Deformation: " + elems[i].deformation.original);
-                        Console.WriteLine("Normal Deformation: " + elems[i].deformation.normalized);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Original Density: " + elems[i].density.original);
-                        Console.WriteLine("Normal Density: " + elems[i].density.normalized);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Geometric Structure: " + elems[i].geometricStructure.asString);
-                        Console.WriteLine("Geometric Structure -gons: " + elems[i].geometricStructure.asInt);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Hardness Original: " + elems[i].hardness.original);
-                        Console.WriteLine("Hardness Normalized: " + elems[i].hardness.normalized);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Pliance: " + elems[i].pliance);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Gravity: " + elems[i].gravity);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Cleaving Tendency: " + elems[i].cleaveTendency);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Melting Resistance: " + elems[i].heatRes.meltingRes);
-                        Console.WriteLine("Boiling Resistance: " + elems[i].heatRes.boilingRes);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Melting Point: "+elems[i].transitionalPoints.meltingPoint);
-                        Console.WriteLine("Boiling Point: " + elems[i].transitionalPoints.boilingPoint);
-                        Console.WriteLine("...");
-                        Console.WriteLine("Pressure Resistance: " + elems[i].pressureRes);
-                        Console.WriteLine("---------------------------------------");
+                    Console.WriteLine("Element " + (i + 1));
+                    elems[i].printInfo();
                 }
 
                 int randomElem = utils.getRandomInt(0, 23); //spit out a random element's breakdown
@@ -68,11 +36,16 @@ namespace Bolder_Blacksmith
 
                     Console.WriteLine("Normalized pressure change at " + i + ": " + GameInstance.getPressureCalc(i));
 
-                    (double,double) newPoints = GameInstance.getPressuredTransitionalPoints(elems[randomElem], GameInstance.getPressureCalc(i));
+                    (double, double) newPoints = GameInstance.getPressuredTransitionalPoints(elems[randomElem], GameInstance.getPressureCalc(i));
 
                     Console.WriteLine("Element " + (randomElem + 1) + "s melting point at " + i + " change in atmospheres: (" + newPoints.Item1 + "," + newPoints.Item2 + ")");
                     Console.WriteLine("...");
                 }
+
+                Console.WriteLine("Making an isotope from element " + (randomElem+1) + ":");
+                Isotope iso = new Isotope(elems[randomElem]);
+                iso.printInfo();
+
 
                 Console.WriteLine("Again?");
                 string again = Console.ReadLine();
@@ -90,6 +63,5 @@ namespace Bolder_Blacksmith
             }
 
         }
-
     }
 }

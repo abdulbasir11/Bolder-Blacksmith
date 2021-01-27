@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,11 +14,7 @@ namespace Bolder_Blacksmith.Generators
         //get one element
         public Element getElement()
         {
-
-            Element elem = new Element();
-            elem.initialize();
-
-            return elem;
+            return new Element();
         }
 
         //get a batch of elements
@@ -29,7 +26,6 @@ namespace Bolder_Blacksmith.Generators
             for (int i = 0; i < elems.Length; i++)
             {
                 holder = new Element();
-                holder.initialize();
                 elems[i] = holder;
             }
 
@@ -45,8 +41,7 @@ namespace Bolder_Blacksmith.Generators
             {
                 for (int j = 0; j < repeats; j++)
                 {
-                    holder = new Element();
-                    holder.initializeTestCase(i + 1);
+                    holder = new Element(i + 1);
                     testCase.Add(holder);
                 }
             }

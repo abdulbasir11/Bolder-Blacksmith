@@ -80,6 +80,13 @@ namespace Bolder_Blacksmith.Generators
      *      -Pressure resistance. Functions as a multiplier or divider, raising or lowering
      *      transitional points conditionally, based on atmospheric pressure. Represented
      *      as a ratio.
+     *      
+     *      -Heat Absorption. Represented as the degrees subtracted per tick. For example,
+     *      if the heat absorption is 12, then every tick, the temperature of the element
+     *      will increase by 12 degrees. Calculated based upon heat resistance, geometric
+     *      structure (i.e., -gons), and deformation (as this affects the integrity of
+     *      the structure). Base structure is an indirect factor seeing as cuboids
+     *      are always between 1-3.
      */
 
     public class Element
@@ -103,11 +110,48 @@ namespace Bolder_Blacksmith.Generators
         public (double meltingPoint, double boilingPoint) transitionalPoints; //temperatures when an element transitions phases
         public (double meltingRes, double boilingRes) heatRes; //e.g. (melting point)*1.05
         public double pressureRes; //measured as "degrees per atmosphere". e.g. .016 degree/atmosphere.
+        public double heatAbsorption; //Rate of heat absorption, e.g. 12/tick
         public double radioactivity = 0.0; //0.0 to 1.0, very rare, causes problems
         public double magnetism = 0.0; //0.0 to 1.0,  does something?
 
-        public Element() { }
+        //basic constructor
+        public Element() {
+            covalence = generateCovalentBonds();
+            catenationRate = generateCatenationRate();
+            baseStructure = generateBaseStructure();
+            deformation = generateDeformation();
+            density = generateDensity();
+            geometricStructure = generateGeometricStructure();
+            hardness = generateHardness();
+            pliance = generatePliance();
+            gravity = generateGravity();
+            cleaveTendency = generateCleaveTendency();
+            heatRes = generateHeatRes();
+            pressureRes = generatePressureRes();
+            transitionalPoints = generateTransitionalPoints();
+            heatAbsorption = generateHeatAbsorption();
+        }
 
+        //test case init
+        public Element(int num)
+        {
+            covalence = generateCovalentBondsTest(num);
+            catenationRate = generateCatenationRate();
+            baseStructure = generateBaseStructure();
+            deformation = generateDeformation();
+            density = generateDensity();
+            geometricStructure = generateGeometricStructure();
+            hardness = generateHardness();
+            pliance = generatePliance();
+            gravity = generateGravity();
+            cleaveTendency = generateCleaveTendency();
+            heatRes = generateHeatRes();
+            pressureRes = generatePressureRes();
+            transitionalPoints = generateTransitionalPoints();
+            heatAbsorption = generateHeatAbsorption();
+        }
+
+        //copy constructor
         public Element (Element other)
         {
             elementName = other.elementName;
@@ -122,6 +166,7 @@ namespace Bolder_Blacksmith.Generators
             gravity = other.gravity;
             cleaveTendency = other.cleaveTendency;
             transitionalPoints = other.transitionalPoints;
+            heatAbsorption = other.heatAbsorption;
             heatRes = other.heatRes;
             pressureRes = other.pressureRes;
             radioactivity = other.radioactivity;
@@ -163,44 +208,12 @@ namespace Bolder_Blacksmith.Generators
             Console.WriteLine("...");
             Console.WriteLine("Pressure Resistance: " + pressureRes);
             Console.WriteLine("...");
+            Console.WriteLine("Heat Absorption: " + heatAbsorption);
+            Console.WriteLine("...");
             Console.WriteLine("Radioactivity: " + radioactivity);
             Console.WriteLine("...");
             Console.WriteLine("Magnetism: " + magnetism);
             Console.WriteLine("---------------------------------------");
-        }
-
-        public void initialize()
-        {
-            covalence = generateCovalentBonds();
-            catenationRate = generateCatenationRate();
-            baseStructure = generateBaseStructure();
-            deformation = generateDeformation();
-            density = generateDensity();
-            geometricStructure = generateGeometricStructure();
-            hardness = generateHardness();
-            pliance = generatePliance();
-            gravity = generateGravity();
-            cleaveTendency = generateCleaveTendency();
-            heatRes = generateHeatRes();
-            pressureRes = generatePressureRes();
-            transitionalPoints = generateTransitionalPoints();
-        }
-
-        public void initializeTestCase(int num)
-        {
-            covalence = generateCovalentBondsTest(num);
-            catenationRate = generateCatenationRate();
-            baseStructure = generateBaseStructure();
-            deformation = generateDeformation();
-            density = generateDensity();
-            geometricStructure = generateGeometricStructure();
-            hardness = generateHardness();
-            pliance = generatePliance();
-            gravity = generateGravity();
-            cleaveTendency = generateCleaveTendency();
-            heatRes = generateHeatRes();
-            pressureRes = generatePressureRes();
-            transitionalPoints = generateTransitionalPoints();
         }
 
         //selects an integer based on a probability of its occurrence.
@@ -575,6 +588,13 @@ namespace Bolder_Blacksmith.Generators
             double t2 = utils.getTransitionalPoint(d, c2, s, b);
 
             return (t1 * heatRes.meltingRes, t2 * heatRes.boilingRes);
+
+        }
+
+        double generateHeatAbsorption()
+        {
+
+            return heatRes.meltingRes * (geometricStructure.asInt * (deformation.original + 1));
 
         }
     }

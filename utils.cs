@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,11 +43,23 @@ namespace Bolder_Blacksmith
             return (input - min) / (max - min);
         }
 
-        //deprecated. may potentially be useful for debugging, but mostly replaced with structs.
+        //More specifically, undoes minmax scaling for fractional values
+
+        //again, this only "undoes" values that are between 0 and 1.
+        //giving this a number outside of that range will yield garbage.
+        //see utils.rescale is that is what you want to do
         public static double inverseNormalize(double input, double min, double max)
         {
             return ((max - min) * input) + min;
         }
+
+        //for non-fractional values that you want to normalize, this changes the range while maintaining the ratio.
+        //it is not necessary for fractional values because they are inherently between 0 and 1. see utils.inverseNormalize
+        public static double rescale(double input, (double oldMin, double oldMax) oldRange, (double newMin, double newMax) newRange)
+        {
+            return (((input - oldRange.oldMin) * (newRange.newMax - newRange.newMin)) / (oldRange.oldMax - oldRange.oldMin)) + newRange.newMin;
+        }
+
 
 
         //Given an upper bound and an array of weights for each probability, selects a biased random number within the range
@@ -80,15 +94,93 @@ namespace Bolder_Blacksmith
         //C# doesn't have a built in clamp method lol
         public static T Clamp<T>(T value, T min, T max)
             where T : System.IComparable<T>
-                {
-                    T result = value;
-                    if (value.CompareTo(max) > 0)
-                        result = max;
-                    if (value.CompareTo(min) < 0)
-                        result = min;
-                    return result;
-                }
+        {
+            T result = value;
+            if (value.CompareTo(max) > 0)
+                result = max;
+            if (value.CompareTo(min) < 0)
+                result = min;
+            return result;
+        }
 
+        public static double Average(this int[] arr)
+        {
+            if (arr.Length > 0)
+            {
+                int sum = 0;
+                foreach (int i in arr) {
+                    sum += i;
+                }
+                return (double)sum / arr.Length;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static double Average(this double[] arr)
+        {
+            if (arr.Length > 0)
+            {
+                double sum = 0;
+                foreach (double i in arr)
+                {
+                    sum += i;
+                }
+                return sum / arr.Length;
+            }
+            else
+            {
+                return 0.0;
+            }
+        }
+
+        public static int Sum(this int[] arr)
+        {
+            if (arr.Length > 0)
+            {
+                int sum = 0;
+                foreach (int i in arr)
+                {
+                    sum += i;
+                }
+                return sum;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static double Sum(this double[] arr)
+        {
+            if (arr.Length > 0)
+            {
+                double sum = 0;
+                foreach (double i in arr)
+                {
+                    sum += i;
+                }
+                return sum;
+            }
+            else
+            {
+                return 0.0;
+            }
+        }
+
+        //fun boolean magic
+        //works with everything that is comparable (int, double, char, etc)
+        //but only intended for numbers!
+        //seems interestingly NAND-y on booleans (inclusively)
+        public static bool Between<T>(this T num, T lower, T upper, bool inclusive) where T : System.IComparable<T>
+        {
+            return inclusive
+                ? lower.CompareTo(num) <= 0 && upper.CompareTo(num) >= 0
+                : lower.CompareTo(num) < 0 && upper.CompareTo(num) > 0;
+                                             
+        }
         public static double getTransitionalPointDampener(double d, int operation)
         {
             //0 - light scaling

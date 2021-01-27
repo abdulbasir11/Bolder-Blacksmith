@@ -8,6 +8,7 @@ public static class Dictionaries
         new Dictionary<string, double[]>
         {
             {"covalence", new [] { 1.0 / 8.0, 1.0 / 8.0, 2.0 / 8.0, 3.0 / 8.0, 2.0 / 8.0, 1.0 / 8.0, 1.0 / 8.0, 1.0 / 8.0 } },
+            {"mineralElements", new [] {.10 , .35, .50, .25, .10} }
         };
 
     public static readonly Dictionary<int, string> cubics =
@@ -17,6 +18,14 @@ public static class Dictionaries
             {2, "face-centered" },
             {3, "hexagonal-cuboid" }
          };
+
+    public static readonly Dictionary<int, string> mineralClassifications =
+    new Dictionary<int, string>
+     {
+            {1,"metal" },
+            {2, "metalloid" },
+            {3, "non-metal" }
+     };
 
     public static readonly Dictionary<int, string> polygons =
     new Dictionary<int, string>

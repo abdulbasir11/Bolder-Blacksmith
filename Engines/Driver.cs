@@ -17,11 +17,30 @@ namespace Bolder_Blacksmith
     {
         public static void Main()
         {
-
-            ElementGenerator elemGen = new ElementGenerator();
-
+            //ElementGenerator elemGen = new ElementGenerator();
+            MineralGenerator minGen = new MineralGenerator();
             while (true)
             {
+                Mineral min = minGen.getMineral();
+                min.printInfo();
+                Console.WriteLine("Again?");
+
+                string again = Console.ReadLine();
+
+                if (again.Equals("y"))
+                {
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            /*
+            while (true)
+            {
+                //three of each
                 Element[] elems = elemGen.getTestCase(3);
 
                 for (int i = 0; i < elems.Length; i++)
@@ -61,7 +80,7 @@ namespace Bolder_Blacksmith
 
 
             }
-
+            */
         }
     }
 }

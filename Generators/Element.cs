@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
+using static Bolder_Blacksmith.Generators.ElementConstants;
 
 namespace Bolder_Blacksmith.Generators
 {
@@ -221,15 +222,15 @@ namespace Bolder_Blacksmith.Generators
         (int,double) generateCovalentBonds()
         {
             double[] covalenceWeights = Dictionaries.weights["covalence"];
-            int prob = utils.generateInverseDistro(Constants.covalence_max, covalenceWeights);
-            return (prob, utils.normalize(prob, Constants.covalence_min, Constants.covalence_max));
+            int prob = utils.generateInverseDistro(covalence_max, covalenceWeights);
+            return (prob, utils.normalize(prob, covalence_min, covalence_max));
         }
 
         //feeds an integer instead of selecting based on weights.
         //for testing purposes
         (int, double) generateCovalentBondsTest(int num)
         {
-            return (num, utils.normalize(num, Constants.covalence_min, Constants.covalence_max));
+            return (num, utils.normalize(num, covalence_min, covalence_max));
         }
 
         //generates a value from 0-1, increasing based on how close an
@@ -245,14 +246,14 @@ namespace Bolder_Blacksmith.Generators
             double catenation = 0;
             double uniformValue;
             double int_covalence = covalence.original;
-            double dist = int_covalence - Constants.catenation_max;
+            double dist = int_covalence - catenation_max;
 
             while (true)
             {
                 uniformValue = utils.getRandomDouble();
                 if (uniformValue <= 0.15)
                 {
-                    catenation = Math.Abs(utils.normalize(dist, Constants.catenation_min, Constants.catenation_max));
+                    catenation = Math.Abs(utils.normalize(dist, catenation_min, catenation_max));
 
                     if (catenation != 1)
                     {
@@ -285,12 +286,12 @@ namespace Bolder_Blacksmith.Generators
         (string,int) generateBaseStructure()
         {
 
-            int unbiasedBase = (covalence.original <= 3) ? Constants.is_cubic : Constants.is_crystal;
+            int unbiasedBase = (covalence.original <= 3) ? is_cubic : is_crystal;
             string structureType = "cubic";
 
             double weight = utils.getRandomDouble();
 
-            if (weight <= .2 && catenationRate <= Constants.structure_cubic_limit)
+            if (weight <= .2 && catenationRate <= structure_cubic_limit)
             {
                 return ("cubic",0);
             }else
@@ -312,16 +313,16 @@ namespace Bolder_Blacksmith.Generators
         (double, double) generateDeformation()
         {
             double baseDeformation = covalence.normalized / 2;
-            double dampenedDeformation = (covalence.original % 2 == 0) ? baseDeformation+Constants.deformation_even_symmetry_multiplier
-                                                                       : baseDeformation+Constants.deformation_odd_symmetry_multiplier;
+            double dampenedDeformation = (covalence.original % 2 == 0) ? baseDeformation+deformation_even_symmetry_multiplier
+                                                                       : baseDeformation+deformation_odd_symmetry_multiplier;
             double dampener = utils.getRandomDouble(0.0,0.15);
 
-            if (dampenedDeformation > Constants.deformation_max)
+            if (dampenedDeformation > deformation_max)
             {
-                dampenedDeformation = Constants.deformation_max - dampener;
-            } else if (dampenedDeformation < Constants.deformation_min)
+                dampenedDeformation = deformation_max - dampener;
+            } else if (dampenedDeformation < deformation_min)
             {
-                dampenedDeformation = Constants.deformation_min + dampener;
+                dampenedDeformation = deformation_min + dampener;
             }
 
             double refinedDeformation = utils.normalize(dampenedDeformation,0.0,0.5);
@@ -348,18 +349,18 @@ namespace Bolder_Blacksmith.Generators
                 baseDensity = utils.getRandomInt(1, 6);
             }
 
-            double symmetryMod = (covalence.original % 2 == 0) ? Constants.density_even_symmetry_multiplier : Constants.density_odd_symmetry_multiplier;
+            double symmetryMod = (covalence.original % 2 == 0) ? density_even_symmetry_multiplier : density_odd_symmetry_multiplier;
             double dampDensity = (baseDensity / symmetryMod) + (Math.Sqrt(covalence.original)-deformation.normalized);
             int dampDensityInt = (int)Math.Round(dampDensity);
 
             //The maximum value is rolling a 12 with 3 covalence. 12 / 0.5 = 24. 24 + sqrt(3) = 24.7. 24.7-0.0 = 24.7 which rounds to 25.
             //This line is solely due to paranoia.
-            if (dampDensityInt > Constants.density_max)
+            if (dampDensityInt > density_max)
             {
-                dampDensityInt = Constants.density_max;
+                dampDensityInt = density_max;
             }
 
-            return (dampDensityInt, utils.normalize(dampDensityInt, Constants.density_min, Constants.density_max));
+            return (dampDensityInt, utils.normalize(dampDensityInt, density_min, density_max));
         }
 
         //Geometry is entirely dependent on density for cubic elements.
@@ -376,19 +377,19 @@ namespace Bolder_Blacksmith.Generators
 
             int baseGeometry;
 
-            if (baseStructure.asInt == Constants.is_cubic)
+            if (baseStructure.asInt == is_cubic)
             {
-                if (density.original <= 14) {baseGeometry = Constants.is_face_centered;}
-                else if (density.original > 14 && density.original <= 21){ baseGeometry = Constants.is_body_centered;}
-                else{baseGeometry = Constants.is_hexagonal_cuboid;}
+                if (density.original <= 14) {baseGeometry = is_face_centered;}
+                else if (density.original > 14 && density.original <= 21){ baseGeometry = is_body_centered;}
+                else{baseGeometry = is_hexagonal_cuboid;}
                 return (Dictionaries.cubics[baseGeometry],baseGeometry);
 
             } else
             {
                 int operation = (int) Math.Round(catenationRate);
                 int dampGeometry = (operation == 0) ?
-                    (int) Math.Round((covalence.original * (Constants.geometry_add_op + utils.getRandomDouble(0.0, .25)))) :
-                    (int) Math.Round((covalence.original * (Constants.geometry_sub_op - utils.getRandomDouble(0.0, .25))));
+                    (int) Math.Round((covalence.original * (geometry_add_op + utils.getRandomDouble(0.0, .25)))) :
+                    (int) Math.Round((covalence.original * (geometry_sub_op - utils.getRandomDouble(0.0, .25))));
                 return (Dictionaries.polygons[dampGeometry], dampGeometry);
             }
         }
@@ -407,17 +408,17 @@ namespace Bolder_Blacksmith.Generators
             //harder elements must be shorter in length (when made into ingot) because they tend to snap instead of bend
             int baseHardness = (int) Math.Ceiling(density.normalized * 10);
             int dampener;
-            if (baseStructure.asInt == Constants.is_cubic)
+            if (baseStructure.asInt == is_cubic)
             {
                 dampener = utils.getRandomInt(0, 10);
-                if (dampener < Constants.hardness_cubic_damp_limit) { baseHardness -= dampener; }
-                return (baseHardness, utils.normalize(baseHardness, Constants.hardness_min, Constants.hardness_max));
+                if (dampener < hardness_cubic_damp_limit) { baseHardness -= dampener; }
+                return (baseHardness, utils.normalize(baseHardness, hardness_min, hardness_max));
             } else
             {
                 //diamonds! 30% chance to be highly catenating
                 dampener = utils.getRandomInt(0, 10);
-                if (dampener < Constants.hardness_crystalline_damp_limit) { baseHardness = (int)Math.Ceiling(catenationRate * 10); }
-                return (baseHardness, utils.normalize(baseHardness, Constants.hardness_min, Constants.hardness_max));
+                if (dampener < hardness_crystalline_damp_limit) { baseHardness = (int)Math.Ceiling(catenationRate * 10); }
+                return (baseHardness, utils.normalize(baseHardness, hardness_min, hardness_max));
             }
 
         }
@@ -440,18 +441,19 @@ namespace Bolder_Blacksmith.Generators
             //destroyed when undergoing certain processes and more likely to fail when alloyed
             double basePliance;
 
-            if (baseStructure.asInt == Constants.is_cubic)
+            if (baseStructure.asInt == is_cubic)
             {
-                if (geometricStructure.asInt == Constants.is_body_centered || geometricStructure.asInt == Constants.is_hexagonal_cuboid)
-                    basePliance = (1 - utils.getRandomDouble(Constants.pliance_hard_cubics_min, Constants.pliance_hard_cubics_max));
+                if (geometricStructure.asInt == is_body_centered || geometricStructure.asInt == is_hexagonal_cuboid)
+                    basePliance = (1 - utils.getRandomDouble(pliance_hard_cubics_min, pliance_hard_cubics_max));
                 else
                 {
-                    basePliance = 1 - utils.getRandomDouble(Constants.pliance_soft_cubics_min, Constants.pliance_soft_cubics_max);
+                    basePliance = 1 - utils.getRandomDouble(pliance_soft_cubics_min, pliance_soft_cubics_max);
                 }
             }
             else
             {
-                basePliance = ((catenationRate+deformation.original)/2.0) - utils.getRandomDouble(Constants.pliance_crystalline_min, Constants.pliance_crystalline_max);
+                basePliance = ((catenationRate+deformation.original)/2.0) - utils.getRandomDouble(pliance_crystalline_min, pliance_crystalline_max);
+                basePliance = utils.Clamp(basePliance,0.0,1.0);
             }
             return basePliance;
         }
@@ -469,11 +471,11 @@ namespace Bolder_Blacksmith.Generators
         double generateGravity()
         {
             //how heavy? In otherwords, what percentage of weight of a mineral will this element take up when bonded?
-            double baseGravity = (baseStructure.asInt == Constants.is_cubic) ? Constants.gravity_cubic_base_weight : Constants.gravity_crystalline_base_weight;
-            double upperBound = (baseStructure.asInt == Constants.is_cubic) ? Constants.gravity_cubic_iter_max : Constants.gravity_crystalline_iter_max;
+            double baseGravity = (baseStructure.asInt == is_cubic) ? gravity_cubic_base_weight : gravity_crystalline_base_weight;
+            double upperBound = (baseStructure.asInt == is_cubic) ? gravity_cubic_iter_max : gravity_crystalline_iter_max;
             for (int i=0; i<density.original; i++)
             {
-                baseGravity += utils.getRandomDouble(Constants.gravity_iter_min,upperBound);
+                baseGravity += utils.getRandomDouble(gravity_iter_min,upperBound);
             }
 
             return baseGravity;
@@ -486,12 +488,12 @@ namespace Bolder_Blacksmith.Generators
         //element will cleave instead of bend.
         double generateCleaveTendency()
         {
-            double structureMod = (baseStructure.asInt == Constants.is_cubic) 
-                ? utils.getRandomDouble(Constants.cleave_cubic_min, Constants.cleave_cubic_max) 
-                : utils.getRandomDouble(Constants.cleave_crystal_min + (covalence.normalized/Constants.cleave_crystal_damp), Constants.cleave_crystal_max);
-            double baseCleave = structureMod - (hardness.normalized / Constants.cleave_damp);
+            double structureMod = (baseStructure.asInt == is_cubic) 
+                ? utils.getRandomDouble(cleave_cubic_min, cleave_cubic_max) 
+                : utils.getRandomDouble(cleave_crystal_min + (covalence.normalized/cleave_crystal_damp), cleave_crystal_max);
+            double baseCleave = structureMod - (hardness.normalized / cleave_damp);
 
-            double dampCleave = utils.Clamp(baseCleave, Constants.cleave_min, Constants.cleave_max);
+            double dampCleave = utils.Clamp(baseCleave, cleave_min, cleave_max);
 
             return dampCleave;
         }
@@ -505,33 +507,33 @@ namespace Bolder_Blacksmith.Generators
             double baseMeltingRes = (1 + (1 - covalence.normalized));
             double baseBoilingRes;
 
-            if (baseStructure.asInt == Constants.is_cubic && covalence.original <= 3)
+            if (baseStructure.asInt == is_cubic && covalence.original <= 3)
             {
                 switch (geometricStructure.asInt)
                 {
-                    case Constants.is_body_centered:
+                    case is_body_centered:
                         baseMeltingRes = utils.getRandomDouble
-                            (Constants.heat_res_body_centered_min, Constants.heat_res_body_centered_max);
+                            (heat_res_body_centered_min, heat_res_body_centered_max);
                         break;
-                    case Constants.is_face_centered:
+                    case is_face_centered:
                         baseMeltingRes = utils.getRandomDouble
-                            (Constants.heat_res_face_centered_min, Constants.heat_res_face_centered_max);
+                            (heat_res_face_centered_min, heat_res_face_centered_max);
                         break;
-                    case Constants.is_hexagonal_cuboid:
+                    case is_hexagonal_cuboid:
                         baseMeltingRes = utils.getRandomDouble
-                            (Constants.heat_res_hexagonal_cuboid_min, Constants.heat_res_hexagonal_cuboid_max);
+                            (heat_res_hexagonal_cuboid_min, heat_res_hexagonal_cuboid_max);
                         break;
                 }
 
             }
-            else if (baseStructure.asInt == Constants.is_cubic && covalence.original >= 4)
+            else if (baseStructure.asInt == is_cubic && covalence.original >= 4)
             {
                 baseMeltingRes += utils.getRandomDouble
-                    (Constants.heat_res_abnormal_cuboid_min, Constants.heat_res_abnormal_cuboid_max);
+                    (heat_res_abnormal_cuboid_min, heat_res_abnormal_cuboid_max);
             }
 
             double divisor = (baseMeltingRes > 1.0) ?
-                Constants.heat_res_non_zero_boiling_scaler : Constants.heat_res_zero_boiling_scaler;
+                heat_res_non_zero_boiling_scaler : heat_res_zero_boiling_scaler;
             baseBoilingRes = Math.Truncate(baseMeltingRes) + ((baseMeltingRes % 1.0) / divisor);
 
             return (baseMeltingRes, baseBoilingRes);
@@ -546,7 +548,7 @@ namespace Bolder_Blacksmith.Generators
             double dampPressureRes;
 
             int sign = (covalence.original > 3) ? 1 : -1;
-            basePressureRes = ((covalence.normalized/2) * sign) + (utils.getRandomDouble(Constants.pressure_damp_min, Constants.pressure_damp_max) * (sign));
+            basePressureRes = ((covalence.normalized/2) * sign) + (utils.getRandomDouble(pressure_damp_min, pressure_damp_max) * (sign));
 
             dampPressureRes = (sign == 1) ? 1.0 + basePressureRes : 1.0 / 1.0 + basePressureRes;
 
@@ -576,8 +578,8 @@ namespace Bolder_Blacksmith.Generators
         {
             double d = density.original;
             double s = hardness.normalized;
-            double c1 = Constants.melting_point_density_scaler;
-            double c2 = Constants.boiling_point_density_scaler;
+            double c1 = melting_point_density_scaler;
+            double c2 = boiling_point_density_scaler;
             double m = utils.getTransitionalPointDampener(density.original, 0);
             double b = utils.getTransitionalPointDampener(density.original, 1);
 

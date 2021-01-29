@@ -40,7 +40,7 @@
     <Compile Include="Actors\EnemyAI.cs" />
     <Compile Include="ColorUtilities\ColorUtils.cs" />
     <Compile Include="Engines\GameConstants.cs" />
-    <Compile Include="Generators\Constants.cs" />
+    <Compile Include="Generators\ElementConstants.cs" />
     <Compile Include="Engines\Driver.cs" />
     <Compile Include="Engines\GameInstance.cs" />
     <Compile Include="Actors\Player.cs" />

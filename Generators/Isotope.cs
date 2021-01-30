@@ -78,7 +78,7 @@ namespace Bolder_Blacksmith.Generators
         public static double glassBonesChance = 0.01;
         public static double glassBonesCleaveTendencyBonus = 0.5;
 
-        public static double radioactiveChance = 0.005;
+        public static double radioactiveChance = 0.1;
         public static double magneticChance = 0.3;
         public Isotope(Element baseElem) : base(baseElem)
         {

@@ -65,6 +65,7 @@ namespace Bolder_Blacksmith.Generators
         char[] elemNames = { 'a', 'b', 'c', 'd', 'e' };
 
         //fields
+        public double[] mineralWeights = Dictionaries.weights["mineralElements"];
         public int numElements;
         public Element[] elements;
         public Dictionary<int, int> atoms;
@@ -91,13 +92,15 @@ namespace Bolder_Blacksmith.Generators
 
         public (int asInt, string asString) classification; //1 - metal, 2 - metalloid, 3 - non-metal
 
-        public double radioactivity = 0.0;
-        public double magnetism = 0.0;
+        public double radioactivity;
+        public double magnetism;
 
-        public Mineral()
+        public Mineral(ElementGenerator gen, double [] weights = null)
         {
-            elemGen = new ElementGenerator();
-      
+            elemGen = gen;
+
+            mineralWeights = weights ?? mineralWeights;
+
             numElements = generateNumElements();
             elements = elemGen.getBatchElements(numElements);
 
@@ -124,6 +127,8 @@ namespace Bolder_Blacksmith.Generators
                 utils.Average(elements.Select(e => e.heatRes.boilingRes).ToArray()));
             pressureRes = utils.Average(elements.Select(e => e.pressureRes).ToArray());
             heatAbsorption = utils.Average(elements.Select(e => e.heatAbsorption).ToArray());
+            radioactivity = utils.Average(elements.Select(e => e.radioactivity).ToArray());
+            magnetism = utils.Average(elements.Select(e => e.magnetism).ToArray());
 
             stability = generateStability();
             reflectance = generateReflectance();
@@ -210,9 +215,22 @@ namespace Bolder_Blacksmith.Generators
         //See Dictionaries.cs
         public int generateNumElements()
         {
-            double[] elementWeights = Dictionaries.weights["mineralElements"];
+            double[] elementWeights = mineralWeights;
             return utils.generateInverseDistro(5, elementWeights);
             
+        }
+
+        //returns specified number of elements for testing purposes
+        public int generateNumElementsTest(int numElements)
+        {
+            if (utils.Between(numElements, 1, 5, true))
+            {
+                return numElements;
+            }
+            else
+            {
+                return 5;
+            }
         }
 
         //In other words, how much of one element is the mineral made up of?

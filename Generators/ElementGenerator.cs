@@ -11,10 +11,69 @@ namespace Bolder_Blacksmith.Generators
      */
     public class ElementGenerator
     {
+
+        //isotope options
+        public bool generatesIsotopes;
+        public double isotopeFrequency;
+
+        //critical value options
+        public double[] covalenceWeights;
+
+        //all optional!
+        public ElementGenerator(double isoFreq = 0.0, double[] covWts =  null )
+        {
+            generatesIsotopes = (isoFreq == 0.0) ? false : true;
+            isotopeFrequency = isoFreq;
+
+            covalenceWeights = covWts ?? new double[0];
+
+            if (!(covalenceWeights.Length == 8 || covalenceWeights.Length == 0))
+            {
+                covalenceWeights = new double[0];
+            }
+
+        }
+
+        public void printInfo()
+        {
+            Console.WriteLine("Generates isotopes?: " + generatesIsotopes);
+            Console.WriteLine("Isotope Frequency: " + isotopeFrequency);
+            Console.WriteLine("Covalence weights: ");
+            foreach (double d in covalenceWeights)
+            {
+                Console.WriteLine(d);
+            }
+            Console.WriteLine("...");
+        }
+
         //get one element
         public Element getElement()
         {
-            return new Element();
+            if (generatesIsotopes)
+            {
+                if (utils.getRandomDouble() < isotopeFrequency)
+                {
+                    if (covalenceWeights.Length == 8)
+                    {
+                        return new Isotope(new Element(covalenceWeights));
+                    }
+                    else
+                    {
+                        return new Isotope(new Element());
+                    }
+                }
+
+            }
+
+            if (covalenceWeights.Length == 8)
+            {
+                return new Element(covalenceWeights);
+            }
+            else
+            {
+                return new Element();
+            }
+
         }
 
         //get a batch of elements
@@ -25,7 +84,7 @@ namespace Bolder_Blacksmith.Generators
 
             for (int i = 0; i < elems.Length; i++)
             {
-                holder = new Element();
+                holder = getElement();
                 elems[i] = holder;
             }
 

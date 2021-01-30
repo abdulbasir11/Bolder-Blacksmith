@@ -10,17 +10,35 @@ namespace Bolder_Blacksmith.Generators
      */
     public class MineralGenerator
     {
-        public Mineral getMineral()
+        public ElementGenerator elemGen;
+        public double[] mineralWeights;
+
+        public MineralGenerator(ElementGenerator gen = null, double[] mineralWts = null)
         {
-            return new Mineral();
+            elemGen = gen ?? new ElementGenerator();
+            mineralWeights = mineralWts ?? new double[0];
         }
 
-        public Mineral getIsotopicMineral()
+        public void printInfo()
         {
-            //Mineral min = new Mineral();
-            //min.initializeIsotopic();
-            //return min;
-            throw new Exception("implement");
+            Console.WriteLine("Mineral Weights: ");
+            foreach (double d in mineralWeights)
+            {
+                Console.WriteLine(d);
+            }
+            Console.WriteLine("...");
+        }
+
+        public Mineral getMineral()
+        {
+            if (mineralWeights.Length == 5)
+            {
+                return new Mineral(elemGen, mineralWeights);
+            }
+            else
+            {
+                return new Mineral(elemGen);
+            }
         }
 
         public Mineral [] getBatchMinerals(int numberOfMinerals)
@@ -31,7 +49,7 @@ namespace Bolder_Blacksmith.Generators
 
             for (int i = 0; i < mins.Length; i++)
             {
-                holder = new Mineral();
+                holder = getMineral();
                 mins[i] = holder;
             }
 

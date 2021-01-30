@@ -17,8 +17,21 @@ namespace Bolder_Blacksmith
     {
         public static void Main()
         {
-            //ElementGenerator elemGen = new ElementGenerator();
+            /*
+            ElementGenerator elemGen1 = new ElementGenerator();
+            //elemGen1.printInfo();
+            ElementGenerator elemGen2 = new ElementGenerator(1.0);
+            //elemGen2.printInfo();
+            ElementGenerator elemGen3 = new ElementGenerator(0.33, new[] { 0.1, 0.1 });
+            //elemGen3.printInfo();
+            ElementGenerator elemGen4 = new ElementGenerator(0.10, new [] {0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0});
+            //elemGen4.printInfo();
+            */
+
             MineralGenerator minGen = new MineralGenerator();
+            minGen.elemGen.printInfo();
+            minGen.printInfo();
+
             while (true)
             {
                 Mineral min = minGen.getMineral();

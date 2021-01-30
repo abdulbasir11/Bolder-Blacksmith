@@ -95,6 +95,7 @@ namespace Bolder_Blacksmith.Generators
 
         //independent properties. Stored as tuples for non-normal,normal value
         public string elementName;
+        public double[] covalenceWeights = Dictionaries.weights["covalence"];
         public (int original, double normalized) covalence;
         public double catenationRate;
         public (string asString, int asInt) baseStructure; //0 cubic, 1 crystalline
@@ -116,7 +117,8 @@ namespace Bolder_Blacksmith.Generators
         public double magnetism = 0.0; //0.0 to 1.0,  does something?
 
         //basic constructor
-        public Element() {
+        public Element(double [] weights = null) {
+            covalenceWeights = weights ?? covalenceWeights;
             covalence = generateCovalentBonds();
             catenationRate = generateCatenationRate();
             baseStructure = generateBaseStructure();
@@ -221,7 +223,6 @@ namespace Bolder_Blacksmith.Generators
         //See Dictionaries.weights
         (int,double) generateCovalentBonds()
         {
-            double[] covalenceWeights = Dictionaries.weights["covalence"];
             int prob = utils.generateInverseDistro(covalence_max, covalenceWeights);
             return (prob, utils.normalize(prob, covalence_min, covalence_max));
         }

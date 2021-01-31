@@ -36,7 +36,8 @@ Lastly, the player has access to a shopkeeper, where you can:
 - Evaluate various ores for insight.
 
 Contributors:
-- Abdul-Basir Abdullah
+- abdulbasir11
+- cheeze42
 
 Major updates:
   - Added scaffolding for "exotic" modifiers for ores

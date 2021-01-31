@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -34,8 +35,47 @@ namespace Bolder_Blacksmith.Generators
 
         }
 
+        #region getters/setters
+
+        public double getIsotopeFrequency()
+        {
+            return isotopeFrequency;
+        }
+        public void setIsotopeFrequency(double d)
+        {
+            if (utils.Between(d, 0.0, 1.0, true))
+            {
+                if (d == 0.0)
+                {
+                    generatesIsotopes = false;
+                    isotopeFrequency = 0.0;
+                }
+                else
+                {
+                    generatesIsotopes = true;
+                    isotopeFrequency = d;
+                }
+            }
+        }
+
+        public double [] getWeights()
+        {
+            return covalenceWeights;
+        }
+
+        public void setWeights(double [] w)
+        {
+            if (w.Length == 8)
+            {
+                covalenceWeights = w;
+            }
+        }
+
+        #endregion
+
         public void printInfo()
         {
+            Console.WriteLine("---ELEMENT GENERATOR SETTINGS START---");
             Console.WriteLine("Generates isotopes?: " + generatesIsotopes);
             Console.WriteLine("Isotope Frequency: " + isotopeFrequency);
             Console.WriteLine("Covalence weights: ");
@@ -43,7 +83,8 @@ namespace Bolder_Blacksmith.Generators
             {
                 Console.WriteLine(d);
             }
-            Console.WriteLine("...");
+            Console.WriteLine("---ELEMENT GENERATOR SETTINGS END---");
+            Console.WriteLine();
         }
 
         //get one element

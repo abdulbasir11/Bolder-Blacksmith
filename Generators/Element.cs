@@ -292,7 +292,7 @@ namespace Bolder_Blacksmith.Generators
 
             double weight = utils.getRandomDouble();
 
-            if (weight <= .2 && catenationRate <= structure_cubic_limit)
+            if (weight <= .18 && catenationRate <= structure_cubic_limit)
             {
                 return ("cubic",0);
             }else

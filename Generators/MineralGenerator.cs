@@ -19,14 +19,42 @@ namespace Bolder_Blacksmith.Generators
             mineralWeights = mineralWts ?? new double[0];
         }
 
+        #region getters/setters
+        public ElementGenerator getElementGenerator()
+        {
+            return elemGen;
+        }
+
+        public void setElementGenerator(ElementGenerator e)
+        {
+            elemGen = e;
+        }
+
+        public double[] getWeights()
+        {
+            return mineralWeights;
+        }
+
+        public void setWeights(double[] w)
+        {
+            if (w.Length == 5)
+            {
+                mineralWeights = w;
+            }
+        }
+
+        #endregion
+
         public void printInfo()
         {
+            Console.WriteLine("---MINERAL GENERATOR SETTINGS START---");
             Console.WriteLine("Mineral Weights: ");
             foreach (double d in mineralWeights)
             {
                 Console.WriteLine(d);
             }
-            Console.WriteLine("...");
+            Console.WriteLine("---MINERAL GENERATOR SETTINGS END---");
+            Console.WriteLine();
         }
 
         public Mineral getMineral()
@@ -57,9 +85,5 @@ namespace Bolder_Blacksmith.Generators
 
         }
 
-        public Mineral[] getTestCase(int repeats)
-        {
-            throw new Exception("implement");
-        }
     }
 }

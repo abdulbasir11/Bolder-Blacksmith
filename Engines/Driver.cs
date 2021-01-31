@@ -32,10 +32,22 @@ namespace Bolder_Blacksmith
             minGen.elemGen.printInfo();
             minGen.printInfo();
 
+            ElementGenerator crystalsOnly = new ElementGenerator(0.5, new[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.7, 0.9 });
+
+            minGen.setElementGenerator(crystalsOnly);
+            minGen.setWeights(new[] { 0.0, 1.0, 0.0, 0.0, 0.0 });
+
+            minGen.elemGen.printInfo();
+            minGen.printInfo();
+
             while (true)
             {
-                Mineral min = minGen.getMineral();
-                min.printInfo();
+                Console.WriteLine("Generating 3 minerals...");
+                Mineral[] mins = minGen.getBatchMinerals(3);
+                foreach (Mineral m in mins)
+                {
+                    m.printInfo();
+                }
                 Console.WriteLine("Again?");
 
                 string again = Console.ReadLine();

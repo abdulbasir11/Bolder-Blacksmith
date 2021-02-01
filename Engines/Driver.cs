@@ -18,6 +18,16 @@ namespace Bolder_Blacksmith
         public static void Main()
         {
             /*
+            ElementGenerator basicGenerator = new ElementGenerator(isoFreq: 1.0);
+            Element[] elements = basicGenerator.getBatchElements(10000000);
+            foreach (Element e in elements)
+            {
+                e.checkParameters();
+            }
+            Environment.Exit(0);
+            */
+
+            /*
             ElementGenerator elemGen1 = new ElementGenerator();
             //elemGen1.printInfo();
             ElementGenerator elemGen2 = new ElementGenerator(1.0);

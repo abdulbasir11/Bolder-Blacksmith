@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Bolder_Blacksmith.Generators.ElementConstants;
 
 namespace Bolder_Blacksmith.Generators
 {
@@ -83,7 +84,8 @@ namespace Bolder_Blacksmith.Generators
         public Isotope(Element baseElem) : base(baseElem)
         {
             //Add additional properties to base element and return isotope
-            //TODO remove hardcoded 1.0s and replace with things from Constants, based on the element type
+            //TODO remove the remaining 1.0s (based on things without max's in the constants file)
+            //TODO Some of these definitions implicitly assume a min of 0, that should be fixed
             floridian = utils.getRandomDouble() < floridianChance;
             if (floridian)
             {
@@ -106,8 +108,8 @@ namespace Bolder_Blacksmith.Generators
             antisocial = utils.getRandomDouble() < antisocialChance;
             if (antisocial)
             {
-                covalence.original = (int)(covalence.original * antisocialCovalenceMult);
-                covalence.normalized = utils.normalize(covalence.original, 1, 8);
+                covalence.original = (int)Math.Ceiling(covalence.original * antisocialCovalenceMult);
+                covalence.normalized = utils.normalize(covalence.original, covalence_min, covalence_max);
             }
 
             paleoDiet = utils.getRandomDouble() < paleoDietChance;
@@ -119,13 +121,13 @@ namespace Bolder_Blacksmith.Generators
             softy = utils.getRandomDouble() < softyChance;
             if (softy)
             {
-                pliance += (1.0 - pliance) * softyPlianceBonus;
+                pliance += (pliance_max - pliance) * softyPlianceBonus;
             }
 
             glassBones = utils.getRandomDouble() < glassBonesChance;
             if (glassBones)
             {
-                cleaveTendency += (1.0 - cleaveTendency) * glassBonesCleaveTendencyBonus;
+                cleaveTendency += (cleave_max - cleaveTendency) * glassBonesCleaveTendencyBonus;
             }
 
             if (utils.getRandomDouble() < radioactiveChance)
@@ -137,6 +139,7 @@ namespace Bolder_Blacksmith.Generators
             {
                 magnetism = utils.getRandomDouble();
             }
+            checkParameters();
         }
 
     }

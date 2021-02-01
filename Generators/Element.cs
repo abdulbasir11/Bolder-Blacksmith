@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -133,6 +134,7 @@ namespace Bolder_Blacksmith.Generators
             pressureRes = generatePressureRes();
             transitionalPoints = generateTransitionalPoints();
             heatAbsorption = generateHeatAbsorption();
+            checkParameters();
         }
 
         //test case init
@@ -152,6 +154,7 @@ namespace Bolder_Blacksmith.Generators
             pressureRes = generatePressureRes();
             transitionalPoints = generateTransitionalPoints();
             heatAbsorption = generateHeatAbsorption();
+            checkParameters();
         }
 
         //copy constructor
@@ -174,6 +177,7 @@ namespace Bolder_Blacksmith.Generators
             pressureRes = other.pressureRes;
             radioactivity = other.radioactivity;
             magnetism = other.magnetism;
+            checkParameters();
         }
 
         public void printInfo()
@@ -413,15 +417,17 @@ namespace Bolder_Blacksmith.Generators
             {
                 dampener = utils.getRandomInt(0, 10);
                 if (dampener < hardness_cubic_damp_limit) { baseHardness -= dampener; }
-                return (baseHardness, utils.normalize(baseHardness, hardness_min, hardness_max));
             } else
             {
                 //diamonds! 30% chance to be highly catenating
                 dampener = utils.getRandomInt(0, 10);
                 if (dampener < hardness_crystalline_damp_limit) { baseHardness = (int)Math.Ceiling(catenationRate * 10); }
-                return (baseHardness, utils.normalize(baseHardness, hardness_min, hardness_max));
             }
-
+            if (baseHardness < hardness_min)
+            {
+                baseHardness = hardness_min;
+            }
+            return (baseHardness, utils.normalize(baseHardness, hardness_min, hardness_max));
         }
 
         //For body centered and hexagonal cuboid elements, pliance is between .55 and .8.
@@ -599,6 +605,71 @@ namespace Bolder_Blacksmith.Generators
 
             return heatRes.meltingRes * (geometricStructure.asInt * (deformation.original + 1));
 
+        }
+
+        // Makes sure that all of the generated parameters are within their
+        // respective bounds, throwing an error if that is not the case
+        // The warn option will also throw warnings for parameters
+        // that are exactly at the maximum or minimum value for floating-
+        // point entries, since that should probably never happen
+        public void checkParameters()
+        {
+            Debug.Assert(covalence.original >= covalence_min);
+            Debug.Assert(covalence.original <= covalence_max);
+            Debug.Assert(covalence.normalized >= normalized_min);
+            Debug.Assert(covalence.normalized <= normalized_max);
+            Debug.Assert(catenationRate >= catenation_min);
+            Debug.Assert(catenationRate <= catenation_max);
+            Debug.Assert(deformation.original >= deformation_min);
+            Debug.Assert(deformation.original <= deformation_max);
+            Debug.Assert(deformation.normalized >= normalized_min);
+            Debug.Assert(deformation.normalized <= normalized_max);
+            Debug.Assert(density.original >= density_min);
+            Debug.Assert(density.original <= density_max);
+            Debug.Assert(density.normalized >= normalized_min);
+            Debug.Assert(density.normalized <= normalized_max);
+            bool validStructure = false;
+            if (baseStructure.asInt == 0)
+            {
+                foreach (KeyValuePair<int, string> entry in Dictionaries.cubics)
+                {
+                    if (geometricStructure.asInt == entry.Key)
+                    {
+                        Debug.Assert(geometricStructure.asString == entry.Value);
+                        validStructure = true;
+                    }
+                }
+            } else if (baseStructure.asInt == 1)
+            {
+                Debug.Assert(baseStructure.asString == "crystalline");
+                foreach (KeyValuePair<int, string> entry in Dictionaries.polygons)
+                {
+                    if (geometricStructure.asInt == entry.Key)
+                    {
+                        Debug.Assert(geometricStructure.asString == entry.Value);
+                        validStructure = true;
+                    }
+                }
+            }
+            Debug.Assert(validStructure);
+            Debug.Assert(hardness.original >= hardness_min);
+            Debug.Assert(hardness.original <= hardness_max);
+            Debug.Assert(hardness.normalized >= normalized_min);
+            Debug.Assert(hardness.normalized <= normalized_max);
+            Debug.Assert(pliance >= pliance_min);
+            Debug.Assert(pliance <= pliance_max);
+            Debug.Assert(gravity >= gravity_min);
+            Debug.Assert(gravity <= gravity_max);
+            Debug.Assert(cleaveTendency >= cleave_min);
+            Debug.Assert(cleaveTendency <= cleave_max);
+            Debug.Assert(heatRes.meltingRes > 0);
+            Debug.Assert(heatRes.boilingRes > 0);
+            Debug.Assert(transitionalPoints.meltingPoint > 0);
+            Debug.Assert(transitionalPoints.boilingPoint > transitionalPoints.meltingPoint);
+            Debug.Assert(pressureRes > 0);
+            Debug.Assert(heatAbsorption > 0);
+            Debug.Assert(radioactivity >= 0);
+            Debug.Assert(magnetism >= 0);
         }
     }
 }
